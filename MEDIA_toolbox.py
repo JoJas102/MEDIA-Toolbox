@@ -58,8 +58,8 @@ from InitParam import b, nii, ROI, DValues, DBasis, Dmin, Dmax
 # Read NIfTIs, cut out ROIs and extract mean signal
 ###########################################################################
 
-signal = np.multiply(nii,np.tile(ROI.img,([1,1,length(b)]))) # TODO: cut ROI and extract signal from NIFTIs
-meanSignal = np.squeeze(np.mean(signal,1:2)).T
+signal = np.multiply(nii,np.tile(ROI.img,([1,1,len(b)]))) # TODO: cut ROI and extract signal from NIFTIs
+meanSignal = np.squeeze(np.mean(signal)).T
 
 ###########################################################################
 # Signal analysis
@@ -67,14 +67,14 @@ meanSignal = np.squeeze(np.mean(signal,1:2)).T
 
 # Running NNLS simulations
 sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, meanSignal.T)
-fitNNLS = [DValues; sNNLSNoReg.T; sNNLSReg.T; [mu zeros(1,length(DValues)-1)]]
+fitNNLS = [DValues, sNNLSNoReg.T, sNNLSReg.T, [mu, np.zeros(1,len(DValues)-1)]] # TODO: check dimension
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
 dNNLS, fNNLS, results = findpeaksNNLS(fitNNLS, 1)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
 dNLLS, fNLLS, resnormNLLS  = NLLSfitting(b, meanSignal, Dmin, Dmax, dNNLS, fNNLS.T) #TODO: fix inaccurate NLLS results
-results(:,5:7) = [dNLLS.T fNLLS.T [resnormNLLS 0 0].T]
+results[:,5:7] = [dNLLS.T, fNLLS.T, [resnormNLLS, 0, 0].T]
 
 
 ###########################################################################
