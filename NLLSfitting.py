@@ -15,7 +15,7 @@ def quadExp(x, b, signal):
     return np.array(math.exp(-math.kron(b, abs(x(1))))*x(5) + math.exp(-math.kron(b, abs(x(2))))*x(6) + math.exp(-math.kron(b, abs(x(3))))*x(7) + math.exp(-math.kron(b, abs(x(4))))*(100-(x(5)+x(6)+x(7))) - signal)
 
 
-def NLLSfitting(b, signal, Dmin, Dmax, dIn=[1.35*1e-3, 4*1e-3, 155*1e-3], fIn=[52.5, 40]): # TODO: Change argument order in main script accordingly
+def NLLSfitting(b, signal, Dmin, Dmax, dIn=[1.35*1e-3, 4*1e-3, 155*1e-3], fIn=[52.5, 40]):
 # NLLSfitting(inputSimu, dIn, fIn) =  a priori information dNNLS and fNNLS in x0
 # NLLSfitting(inputSimu) = no a priori information, using standard start value
 # default tri-exp start values for dIn and fIn [Periquito2021]

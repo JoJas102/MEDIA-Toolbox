@@ -73,7 +73,7 @@ fitNNLS = [DValues; sNNLSNoReg.T; sNNLSReg.T; [mu zeros(1,length(DValues)-1)]]
 dNNLS, fNNLS, results = findpeaksNNLS(fitNNLS, 1)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
-dNLLS, fNLLS, resnormNLLS  = NLLSfitting(b, meanSignal, dNNLS, fNNLS.T, Dmin, Dmax) #TODO: fix inaccurate NLLS results
+dNLLS, fNLLS, resnormNLLS  = NLLSfitting(b, meanSignal, Dmin, Dmax, dNNLS, fNNLS.T) #TODO: fix inaccurate NLLS results
 results(:,5:7) = [dNLLS.T fNLLS.T [resnormNLLS 0 0].T]
 
 
