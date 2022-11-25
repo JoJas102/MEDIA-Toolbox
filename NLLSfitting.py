@@ -1,50 +1,62 @@
-function [d, f, resnorm] = NLLSfitting(b, signal, dIn, fIn, Dmin, Dmax)
+import math
+import numpy as np
+from scipy.optimize import least_squares
+
+def monoExp(x, b, signal):
+    return np.array(math.exp(-math.kron(b, abs(x(1)))) - signal)
+
+def biExp(x, b, signal):
+    return np.array(math.exp(-math.kron(b, abs(x(1))))*x(4) + math.exp(-math.kron(b, abs(x(2))))*(100-x(4)) - signal)
+
+def triExp(x, b, signal):
+    return math.exp(-math.kron(b, abs(x(1))))*x(4) + math.exp(-math.kron(b, abs(x(2))))*x(5) + math.exp(-math.kron(b, abs(x(3))))*(100-(x(4)+x(5))) - signal
+
+def quadExp(x, b, signal):
+    return np.array(math.exp(-math.kron(b, abs(x(1))))*x(5) + math.exp(-math.kron(b, abs(x(2))))*x(6) + math.exp(-math.kron(b, abs(x(3))))*x(7) + math.exp(-math.kron(b, abs(x(4))))*(100-(x(5)+x(6)+x(7))) - signal)
+
+
+def NLLSfitting(b, signal, Dmin, Dmax, dIn=[1.35*1e-3, 4*1e-3, 155*1e-3], fIn=[52.5, 40]): # TODO: Change argument order in main script accordingly
 # NLLSfitting(inputSimu, dIn, fIn) =  a priori information dNNLS and fNNLS in x0
 # NLLSfitting(inputSimu) = no a priori information, using standard start value
+# default tri-exp start values for dIn and fIn [Periquito2021]
 
-    if nargin < 3
-        x0 = [1.35*1e-3, 4*1e-3, 155*1e-3, 52.5, 40]'  # default start values for triExp [Periquito2021]
-    else
-        input = [dIn fIn]
-        x0 = input(1:5)
-    end
+    input = [dIn, fIn].T
+    x0 = input[1:-2]
     
-    np = nnz(x0(1:3))                                  # number of found compartments by NNLS   
-    options.Algorithm = 'levenberg-marquardt' 
-    options.Display = 'off'
+    np = np.count_nonzero(x0[1:3])                      # number of found compartments by NNLS   
 
-    lb = [repelem(Dmin,np) repelem(0,np-1)]            # set bound constraints based on NNLS d range
-    ub = [repelem(Dmax,np) repelem(100,np-1)]
-    scaling = 100/signal(1)                            # scale signal for NLLS to find reasonable volume fractions
-    signal = signal.*scaling
+    lb = [np.repeat(Dmin,np), np.repeat(0,np-1)]        # set bound constraints based on NNLS d range
+    ub = [np.repeat(Dmax,np), np.repeat(100,np-1)]      # TODO: bounds neccessary?
+    
+    scaling = 100/signal(1)                             # scale signal for NLLS to find reasonable volume fractions
+    signal = np.multiply(signal,scaling)
         
-    if     np == 3
+    if     np == 3:
         # Create tri-exponential signal function for fitting with d and f as fitting variable
-        triExp = @(x) exp(-kron(b, abs(x(1))))*x(4) + exp(-kron(b, abs(x(2))))*x(5) + exp(-kron(b, abs(x(3))))*(100-(x(4)+x(5))) - signal
-        [s(1:5), resnorm(:)] = lsqnonlin(triExp, x0, lb, ub, options) 
-        s(6) =(100-(s(4)+s(5)))
+        result = least_squares(triExp(x0, b, signal), x0, bounds=(lb, ub), method='lm')
+        s = result.x
+        s[6] =100-(s[4]+s[5])
 
-    elseif np == 2
+    elif np == 2:
         # Create bi-exponential signal function
-        biExp = @(x) exp(-kron(b, abs(x(1))))*x(4) + exp(-kron(b, abs(x(2))))*(100-x(4)) - signal
-        [s(1:4), resnorm(:)] = lsqnonlin(biExp, x0(1:4),[],[],options) 
-        s(5) =(100-s(4))
-        s(6) = 0
+        result = least_squares(biExp(x0, b, signal), x0[1:4],[],[], method='lm') 
+        s = result.x
+        s[5] = 100-s(4)
+        s[6] = 0
 
-    elseif np == 1
+    elif np == 1:
         # Create mono-exponential signal function
-        monoExp = @(x) exp(-kron(b, abs(x(1)))) - signal
-        [s(1), resnorm(:)] = lsqnonlin(monoExp, x0(1),[],[],options) 
-        s(2:6) = zeros(1,5)
-        s(4) = 1
-    
-    elseif np == 4 
-        # Create 4-exponential signal function
-        quadExp = @(x) exp(-kron(b, abs(x(1))))*x(5) + exp(-kron(b, abs(x(2))))*x(6) + exp(-kron(b, abs(x(3))))*x(7) + exp(-kron(b, abs(x(4))))*(100-(x(5)+x(6)+x(7))) - signal
-        [s, resnorm(:)] = lsqnonlin(quadExp, x0, lb, ub, options) 
-        s(8) =(100-(s(5)+s(6)+s(7)))
-    end
+        result = least_squares(monoExp, x0(1),[],[], method='lm') 
+        s[1] = result.x
+        s[2:6] = np.zeros(1,5)
+        s[4] = 1
 
-    d = abs(s(1:np))
-    f = s(np+1:end)
-end
+    elif np == 4:
+        # Create 4-exponential signal function
+        result = least_squares(quadExp, x0, bounds=(lb, ub), method='lm')
+        s = result.x
+        s[8] = 100-sum(s[5:8])
+
+    d = abs(s[1:np])
+    f = s[np+1:-1]
+    return d, f, result
