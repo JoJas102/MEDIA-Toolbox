@@ -1,8 +1,9 @@
 ###########################################################################
 #
 #           Multi-Exponential Decay Image Analysis (MEDIA) Toolbox 
-#{
+#
 ###########################################################################
+# region <Discription>
 # General information
 ###########################################################################
 # 
@@ -44,35 +45,36 @@
 # - b = list of used b-values for plotting
 # - DValues = fitting range
 # - m = number of bins for fitting procedure
-#}
+#endregion
 ###########################################################################
 # Init parameters
 ###########################################################################
 
-clear
-[b, nii, ROI, DValues, DBasis, Dmin, Dmax] = InitVar();
+import numpy as np
+import NNLSfitting, findpeaksNNLS, NLLSfitting, plotSimu
+from InitParam import b, nii, ROI, DValues, DBasis, Dmin, Dmax
 
 ###########################################################################
 # Read NIfTIs, cut out ROIs and extract mean signal
 ###########################################################################
 
-signal = nii.*repmat(double(ROI.img),[1,1,length(b)]); 
-meanSignal = squeeze(mean(signal,1:2))'; 
+signal = np.multiply(nii,np.tile(ROI.img,([1,1,length(b)]))) # TODO: cut ROI and extract signal from NIFTIs
+meanSignal = np.squeeze(np.mean(signal,1:2)).T
 
 ###########################################################################
 # Signal analysis
 ###########################################################################
 
 # Running NNLS simulations
-[sNNLSNoReg, sNNLSReg, mu] = NNLSfitting(DBasis, meanSignal'); 
-fitNNLS = [DValues; sNNLSNoReg'; sNNLSReg'; [mu zeros(1,length(DValues)-1)]]; 
+sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, meanSignal.T)
+fitNNLS = [DValues; sNNLSNoReg.T; sNNLSReg.T; [mu zeros(1,length(DValues)-1)]]
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
-[dNNLS, fNNLS, results] = findpeaksNNLS(fitNNLS, 1);
+dNNLS, fNNLS, results = findpeaksNNLS(fitNNLS, 1)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
-[dNLLS, fNLLS, resnormNLLS]  = NLLSfitting(b, meanSignal, dNNLS, fNNLS', Dmin, Dmax); #TODO: fix inaccurate NLLS results
-results(:,5:7) = [dNLLS' fNLLS' [resnormNLLS 0 0]' ];
+dNLLS, fNLLS, resnormNLLS  = NLLSfitting(b, meanSignal, dNNLS, fNNLS.T, Dmin, Dmax) #TODO: fix inaccurate NLLS results
+results(:,5:7) = [dNLLS.T fNLLS.T [resnormNLLS 0 0].T]
 
 
 ###########################################################################
@@ -80,9 +82,9 @@ results(:,5:7) = [dNLLS' fNLLS' [resnormNLLS 0 0]' ];
 ###########################################################################
 
 # Plotting figures
-plotSimu(meanSignal, b, fitNNLS); #TODO: hier weiter
+plotSimu(meanSignal, b, fitNNLS);
 
 # Write simulation data to file
-filename = ["NNLSfitting.txt" "MEDIAresults.txt"];
-write3DMatrixToTxt(fitNNLS, filename(1)); 
-write3DMatrixToTxt(results, filename(2));
+filename = ["NNLSfitting.txt" "MEDIAresults.txt"]
+#write3DMatrixToTxt(fitNNLS, filename(1))
+#write3DMatrixToTxt(results, filename(2))
