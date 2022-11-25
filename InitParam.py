@@ -16,4 +16,4 @@ Dmin = 0.7*1e-3       # [vanBaalen2016] & [Wong2019]
 Dmax = 300*1e-3
 m = 300               # no. of bins             
 DValues = np.logspace(np.log10(Dmin), np.log10(Dmax), m) 
-DBasis = math.exp(-math.kron(np.transpose(b), DValues))
+DBasis = math.exp(-math.kron(b.T), DValues))
