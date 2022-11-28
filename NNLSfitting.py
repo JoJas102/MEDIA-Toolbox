@@ -1,10 +1,12 @@
-function [s, s2, mu] = NNLSfitting(DBasis, signal)
+from scipy.optimize import nnls
+
+def NNLSfitting(DBasis, signal):
 
     # NNLS fitting w\ Reg (find unknown signal amplitude of components (signal)) minimises norm(A*s-signal) for reference
-    s = lsqnonneg(DBasis,signal) 
+    s = nnls(DBasis,signal) 
 
     # Regularization fitting NNLS
     [s2, mu, resid] = CVNNLS(DBasis,signal) # CVNNLS from Bjarnason
-    #fprintf('� = #f \n', mu) # larger mu = more satisfaction of constraints at expanse of increasing misfit (Witthal1989)
+    # larger mu = more satisfaction of constraints at expanse of increasing misfit (Witthal1989)
     
-end
+    return s, s2, mu
