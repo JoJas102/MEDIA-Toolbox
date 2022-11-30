@@ -40,7 +40,7 @@ def findpeaksNNLS(matrix, reg):
     # TODO: obsolet code if threshold/prominence adjusted in find_peaks
     fNNLS[fNNLS < 0.03] = 0
 
-    fNNLS = np.divide(fNNLS, sum(fNNLS)) * 100  # normalize f
+    fNNLS = np.divide(fNNLS, sum(fNNLS)) * 100    # normalize f
 
     resultNNLS = [maxima, np.transpose(dNNLS), np.transpose(fwhm), fNNLS]
     return dNNLS, fNNLS, resultNNLS
