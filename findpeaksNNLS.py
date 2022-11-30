@@ -36,7 +36,7 @@ def findpeaksNNLS(matrix, reg):
     )
 
     # Threshold
-    dNNLS[fNNLS < 0.03] = 0              # remove any entry with vol frac lower 3%
+    dNNLS[fNNLS < 0.03] = 0  # remove any entry with vol frac lower 3%
     # TODO: obsolet code if threshold/prominence adjusted in find_peaks
     fNNLS[fNNLS < 0.03] = 0
 
