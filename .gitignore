@@ -2,3 +2,4 @@
 .idea/
 .vscode/
 .testData/
+.__pycache__/
