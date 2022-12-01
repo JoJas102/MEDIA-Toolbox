@@ -14,9 +14,7 @@ from InitParam import b, nii, ROI, DValues, DBasis, Dmin, Dmax
 # Read NIfTIs, cut out ROIs and extract mean signal
 ###########################################################################
 
-# TODO: test cutting ROI and extracting signal from NIFTIs
-signal = np.multiply(nii, np.tile(ROI.img, ([1, 1, len(b)])))
-meanSignal = np.squeeze(np.mean(signal)).T
+signal = np.multiply(nii, ROI)
 
 ###########################################################################
 # Signal analysis
