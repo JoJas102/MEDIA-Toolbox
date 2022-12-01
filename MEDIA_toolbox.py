@@ -21,7 +21,10 @@ signal = np.multiply(nii, ROI)
 ###########################################################################
 
 # Running NNLS simulations
-sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, meanSignal.T)
+# TODO: write code for full array instead of meanSignal array only
+# TODO: parrallelise code
+sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
+
 # TODO: check dimension
 fitNNLS = [
     DValues,
