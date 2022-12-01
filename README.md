@@ -1,4 +1,4 @@
-﻿# MEDIA-Toolbox
+﻿# Multi-Exponential Decay Image Analysis (MEDIA) Toolbox
 
 ## Description
 
