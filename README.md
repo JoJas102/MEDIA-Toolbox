@@ -2,7 +2,7 @@
 
 ## Description
 
-Program to analyse multi-exponential signal compartments in DWI images/scans with several b-values using NNLS fitting among others to fit diffusion data and compare multiple multi-exponential fitting methods. Finding the total number of components contributing to the multi-exponential signal and analysing the results by calculating corresponding diffusion parameters.
+Program to analyse multi-exponential signal compartments in DWI images/scans with several b-values using NNLS fitting among others to fit diffusion data and compare multiple multi-exponential fitting methods. Finding the total number of components contributing to the multi-exponential signal and analysing the results by calculating corresponding diffusion parameters.\
 This fitting routine uses the regularized NNLS algorithm with cross validation (CVNNLS.m) from Thorarin Bjarnason.
 
 Generally capital letters represent matrices or tensors and small letters stand for variuos variables, vectors and constants.
@@ -28,9 +28,5 @@ For any further comments or explaining descriptions see annotations
 inside the functions code files.
 
 ## General coding information
-Requires Python 3.11
+Requires Python 3.11\
 Formatting is taken care of by black
-
-
-Jonas Jasse
-Last modified 01.12.2022
