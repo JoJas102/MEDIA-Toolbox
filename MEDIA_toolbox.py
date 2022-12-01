@@ -11,7 +11,7 @@ import NNLSfitting, findpeaksNNLS, NLLSfitting, plotSimu
 from InitParam import b, nii, ROI, DValues, DBasis, Dmin, Dmax
 
 ###########################################################################
-# Read NIfTIs, cut out ROIs and extract mean signal
+# RCut out ROIs and extract signal
 ###########################################################################
 
 signal = np.multiply(nii, ROI)
@@ -21,7 +21,7 @@ signal = np.multiply(nii, ROI)
 ###########################################################################
 
 # Running NNLS simulations
-# TODO: write code for full array instead of meanSignal array only
+# TODO: write NNLS code for full array instead of meanSignal array only
 # TODO: parrallelise code
 sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
 
@@ -37,8 +37,9 @@ fitNNLS = [
 dNNLS, fNNLS, results = findpeaksNNLS(fitNNLS, 1)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
+# TODO: write NLLS code for full array instead of meanSignal array only
 # TODO: fix inaccurate NLLS results
-dNLLS, fNLLS, resnormNLLS = NLLSfitting(b, meanSignal, Dmin, Dmax, dNNLS, fNNLS.T)
+dNLLS, fNLLS, resnormNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS.T)
 results[:, 5:7] = [dNLLS.T, fNLLS.T, [resnormNLLS, 0, 0].T]
 
 
@@ -47,9 +48,8 @@ results[:, 5:7] = [dNLLS.T, fNLLS.T, [resnormNLLS, 0, 0].T]
 ###########################################################################
 
 # Plotting figures
-plotSimu(meanSignal, b, fitNNLS)
+# TODO: Adjust plotSimu to maps instead of mean signal
+plotSimu(signal, b, fitNNLS)
 
 # Write simulation data to file
 filename = ["NNLSfitting.txt" "MEDIAresults.txt"]
-# write3DMatrixToTxt(fitNNLS, filename(1))
-# write3DMatrixToTxt(results, filename(2))
