@@ -25,16 +25,8 @@ signal = np.multiply(nii, ROI)
 # TODO: parrallelise code
 sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
 
-# TODO: check dimension
-fitNNLS = [
-    DValues,
-    sNNLSNoReg.T,
-    sNNLSReg.T,
-    [mu, np.zeros(1, len(DValues) - 1)],
-]
-
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
-dNNLS, fNNLS, results = findpeaksNNLS(fitNNLS, 1)
+dNNLS, fNNLS, results = findpeaksNNLS(sNNLSReg, DValues)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
 # TODO: write NLLS code for full array instead of meanSignal array only
@@ -42,6 +34,7 @@ dNNLS, fNNLS, results = findpeaksNNLS(fitNNLS, 1)
 dNLLS, fNLLS, resnormNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS.T)
 results[:, 5:7] = [dNLLS.T, fNLLS.T, [resnormNLLS, 0, 0].T]
 
+# TODO: create structures to save relevant results
 
 ###########################################################################
 # Plotting and saving data
