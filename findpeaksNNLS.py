@@ -29,8 +29,8 @@ def findpeaksNNLS(s, DValues):
                 * math.sqrt(2 * math.pi)
             )
 
-            # Threshold
-            d[f < 0.03] = 0  # remove any entry with vol frac lower 3%
+            # Threshold (remove entries with vol frac < 3%)
+            d[f < 0.03] = 0
             # TODO: obsolet code if threshold/prominence adjusted in find_peaks
             f[f < 0.03] = 0
 
