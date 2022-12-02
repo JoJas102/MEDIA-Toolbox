@@ -21,18 +21,15 @@ signal = np.multiply(nii, ROI)
 ###########################################################################
 
 # Running NNLS simulations
-# TODO: write NNLS code for full array instead of meanSignal array only
 # TODO: parrallelise code
 sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
-dNNLS, fNNLS, results = findpeaksNNLS(sNNLSReg, DValues)
+dNNLS, fNNLS = findpeaksNNLS(sNNLSReg, DValues)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
-# TODO: write NLLS code for full array instead of meanSignal array only
 # TODO: fix inaccurate NLLS results
 dNLLS, fNLLS, resnormNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS.T)
-results[:, 5:7] = [dNLLS.T, fNLLS.T, [resnormNLLS, 0, 0].T]
 
 # TODO: create structures to save relevant results
 
