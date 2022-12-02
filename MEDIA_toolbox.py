@@ -19,9 +19,9 @@ signal = np.multiply(nii, ROI)
 ###########################################################################
 # Signal analysis
 ###########################################################################
+# TODO: parrallelise code
 
 # Running NNLS simulations
-# TODO: parrallelise code
 sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
@@ -31,7 +31,7 @@ dNNLS, fNNLS = findpeaksNNLS(sNNLSReg, DValues)
 # TODO: fix inaccurate NLLS results
 dNLLS, fNLLS, resnormNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS.T)
 
-# TODO: create structures to save relevant results
+# TODO: additional structures to save relevant results?
 
 ###########################################################################
 # Plotting and saving data
