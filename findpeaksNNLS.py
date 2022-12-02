@@ -7,7 +7,7 @@ from scipy.signal import peak_widths
 def findpeaksNNLS(s, DValues):
     # find peaks and diffusion coefficients of NNLS fitting results
 
-    d_tot, f_tot = np.empty(len(s), len(s), len(3))
+    d_tot, f_tot = np.zeros(len(s), len(s), len(3))
 
     for i in len(s):
         for j in len(s):
