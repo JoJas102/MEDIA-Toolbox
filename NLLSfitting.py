@@ -1,17 +1,15 @@
-def multiExp(x, b, signal, np):
-    import math
-    import numpy as np
+import numpy as np
+from scipy.optimize import least_squares
+import math
 
-    f = np.array(0)
-    for i in np - 1:
-        f = f + np.array(math.exp(-np.kron(b, abs(x(i)))) * x(np + i))
+def multi_exp_wrapper(b, signal, np):
 
-    return (
-        f
-        + np.array(math.exp(-np.kron(b, abs(x(np - 1)))) * (100 - (np.sum(x[np:-1]))))
-        - signal
-    )
-
+    def multi_exp(x):
+        f = np.array(0)
+        for i in range(np - 2):
+            f = f + np.array(math.exp(-np.kron(b, abs(x(i)))) * x(np + i))
+        return f + np.array(math.exp(-np.kron(b, abs(x(np - 1)))) * (100 - (np.sum(x[np:-1])))) - signal
+    return multi_exp
 
 def NLLSfitting(
     b, signal, Dmin, Dmax, dIn=[1.35 * 1e-3, 4 * 1e-3, 155 * 1e-3], fIn=[52.5, 40]
@@ -19,9 +17,6 @@ def NLLSfitting(
     # NLLSfitting(inputSimu, dIn, fIn) =  a priori information dNNLS and fNNLS in x0
     # NLLSfitting(inputSimu) = no a priori information, using standard start value
     # default tri-exp start values for dIn and fIn [Periquito2021]
-
-    import numpy as np
-    from scipy.optimize import least_squares
 
     d, f = np.zeros(len(signal), len(signal), len(3))
 
@@ -44,10 +39,8 @@ def NLLSfitting(
             scaling = 100 / signal[i][j][1]
             scaledSignal = np.multiply(signal[i][j][:], scaling)
 
-            result = least_squares(
-                multiExp(_, b, scaledSignal, np), x0, bounds=(lb, ub), method="lm"
-            )
-            s = np.array(result.x)
+            result = least_squares(multi_exp_wrapper(b, scaledSignal, np), x0, bounds=(lb, ub), method="lm")
+            s = result.x
             s = np.append(s, 100 - sum(s[np:-1]))
 
             d[i][j][:] = abs(s[1:np])
