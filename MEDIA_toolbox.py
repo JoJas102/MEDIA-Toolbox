@@ -42,4 +42,5 @@ dNLLS, fNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS.T)
 plotSimu(signal, b, fitNNLS)
 
 # Write simulation data to file
+# TODO: Save results to (excel) file
 filename = ["NNLSfitting.txt" "MEDIAresults.txt"]
