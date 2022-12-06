@@ -28,9 +28,8 @@ sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
 dNNLS, fNNLS = findpeaksNNLS(sNNLSReg, DValues)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
-# TODO: Adjust code for pixelwise analysis
 # TODO: fix inaccurate NLLS results
-dNLLS, fNLLS, resnormNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS.T)
+dNLLS, fNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS.T)
 
 # TODO: additional structures to save relevant results?
 

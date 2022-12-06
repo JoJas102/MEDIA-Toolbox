@@ -46,4 +46,4 @@ def NLLSfitting(
             d[i][j][:] = abs(s[1:np])
             f[i][j][:] = s[np + 1 : -1]
 
-    return d, f, result
+    return d, f
