@@ -1,3 +1,4 @@
+import regNNLS
 import numpy as np
 from scipy.optimize import nnls
 
@@ -12,7 +13,7 @@ def NNLSfitting(DBasis, signal):
             s[i][j][:] = nnls(DBasis, signal[i][j][:])
 
             # NNLS fitting w reg (CVNNLS from Bjarnason)
-            sReg[i][j][:], mu, resid = CVNNLS(DBasis, signal[i][j][:])
+            sReg[i][j][:], mu, resid = regNNLS(DBasis, signal[i][j][:])
             # larger mu = more satisfaction of constraints at expanse of increasing misfit (Witthal1989)
 
     return s, sReg, mu
