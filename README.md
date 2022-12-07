@@ -8,7 +8,7 @@ This fitting routine uses the regularized NNLS algorithm with cross validation (
 Generally capital letters represent matrices or tensors and small letters stand for variuos variables, vectors and constants.
 
 ### Functions
-To carry out this simulation the following functions need to be located in the path:
+The following functions need to be located in the path:
 * InitParam.py
 * MEDIA_toolbox.py
 * NNLSfitting.py
@@ -19,10 +19,10 @@ To carry out this simulation the following functions need to be located in the p
 
 ### Initial parameters neccessary
 In [InitParam.py](InitParam.py) essential simulation and acquisition parameters are set:
-* files[] = string array containing filepaths to scan image (4D NIfTI) and ROI (segmentation containing region of interest as NIfTI)
-* b[] = list of used b-values
-* Dmin and Dmax = fitting range to calculate DValues for fitting 
-* m = number of bins for fitting procedure endregion
+* files      = string array containing filepaths to scan image (4D NIfTI) and ROI (segmentation containing region of interest as NIfTI)
+* b          = list of used b-values
+* Dmin, Dmax = fitting range to calculate DValues for fitting 
+* m          = number of bins for fitting procedure endregion
 
 For any further comments or explaining descriptions see annotations
 inside the functions code files.
@@ -31,5 +31,13 @@ inside the functions code files.
 Requires Python 3.11\
 Formatting is taken care of by black
 
+### Install dependencies
+
+* numpy
+* scipy
+* nibabel
+* math
+* matplotlib
+
 ---
-Last modified: 01.12.2022
+Last modified: 07.12.2022
