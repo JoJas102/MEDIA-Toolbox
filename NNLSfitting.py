@@ -1,16 +1,17 @@
-import regNNLS
+from regNNLS import *
 import numpy as np
 from scipy.optimize import nnls
 
 
 def NNLSfitting(DBasis, signal):
 
-    s, sReg = np.zeros(len(signal), len(signal), len(DBasis))
+    s = np.zeros((len(signal), len(signal), len(DBasis[1][:])))
+    sReg = s
 
-    for i in len(signal):
-        for j in len(signal):
+    for i in range(len(signal) - 1):
+        for j in range(len(signal - 1)):
             # NNLS fitting w\ reg minimises norm(A*s-signal) for reference
-            s[i][j][:] = nnls(DBasis, signal[i][j][:])
+            s[i][j][:], _ = nnls(DBasis, signal[i][j][:])
 
             # NNLS fitting w reg (CVNNLS from Bjarnason)
             sReg[i][j][:], mu, resid = regNNLS(DBasis, signal[i][j][:])

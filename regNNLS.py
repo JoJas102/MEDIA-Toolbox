@@ -3,18 +3,20 @@ from scipy.optimize import nnls
 from scipy.linalg import norm
 
 
-def nnlsfit(A, H, Lambda, Decay):
+def nnlsfit(A, H, Lambda, signal):
+    test = Lambda * H
+    test2 = [[A][test]]  # TODO: solve error
     s = nnls(
-        [[A][(Lambda) * H]].T * [[A][(Lambda) * H]],
-        [[A][(Lambda) * H]].T * [[Decay][np.zeros((len(H[:][1]), 1))]],
+        [[A][Lambda * H]].T * [[A][Lambda * H]],
+        [[A][Lambda * H]].T * [[signal][np.zeros((len(H[:][1]), 1))]],
     )
     return s
 
 
-def getG(A, H, I, Lambda, Decay):
-    NNLSfit = nnlsfit(A, H, Lambda, Decay)
+def getG(A, H, I, Lambda, signal):
+    NNLSfit = nnlsfit(A, H, Lambda, signal)
     G = (
-        norm(Decay - A * NNLSfit)
+        norm(signal - A * NNLSfit)
         ^ 2 / np.trace(I - A * (A.T * A + (Lambda) * H.T * H) ^ -1 * A.T)
         ^ 2
     )
@@ -29,10 +31,10 @@ def regNNLS(DBasis, signal):
 
     # Curvature
     Dlength = len(DBasis[1][:])
-    H = (
-        -2 * np.identity(Dlength, Dlength)
-        + np.diagonal(np.ones(Dlength - 1, 1), 1)
-        + np.diagonal(np.ones(Dlength - 1, 1), -1)
+    H = np.array(
+        -2 * np.identity(Dlength)
+        + np.diag(np.ones((Dlength - 1)), 1)
+        + np.diag(np.ones((Dlength - 1)), -1)
     )
 
     LambdaLeftInit = 0.00001
@@ -66,7 +68,7 @@ def regNNLS(DBasis, signal):
         i = +1
 
     Lambda = midpoint
-    s = nnlsfit(A, H, Lambda, signal)
+    s = nnlsfit(DBasis, H, Lambda, signal)
 
     [amp_min, resnormMin] = nnls(DBasis, signal)
 
