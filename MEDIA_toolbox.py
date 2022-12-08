@@ -25,7 +25,7 @@ signal = np.multiply(nii, ROI)
 # TODO: parrallelise code
 
 # Running NNLS simulations
-# TODO: find regularized NNLS code as alternative for CVNNLS
+# TODO: only fit pixels with values to cut time?
 sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
