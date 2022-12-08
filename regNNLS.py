@@ -51,12 +51,9 @@ def regNNLS(DBasis, signal):
         + np.diag(np.ones(Dlength - 1), -1)
     )
 
-    LambdaLeftInit = 0.00001
-    LambdaRightInit = 8
+    LambdaLeft = 0.00001
+    LambdaRight = 8
     tol = 0.0001
-
-    LambdaLeft = LambdaLeftInit
-    LambdaRight = LambdaRightInit
 
     # Function (+ delta) and derivative f at left point
     G_left = getG(DBasis, H, I, LambdaLeft, signal)
