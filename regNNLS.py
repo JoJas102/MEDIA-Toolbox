@@ -3,36 +3,52 @@ from scipy.optimize import nnls
 from scipy.linalg import norm
 
 
-def nnlsfit(A, H, Lambda, Decay):
-    s = nnls(
-        [[A][(Lambda) * H]].T * [[A][(Lambda) * H]],
-        [[A][(Lambda) * H]].T * [[Decay][np.zeros((len(H[:][1]), 1))]],
+def nnlsfit(A, H, Lambda, signal):
+    # Regularised fitting routine
+
+    s, _ = nnls(
+        np.matmul(np.concatenate((A, Lambda * H)).T, np.concatenate((A, Lambda * H))),
+        np.matmul(
+            np.concatenate((A, Lambda * H)).T,
+            np.append(signal, np.zeros((len(H[:][1])))),
+        ),
     )
     return s
 
 
-def getG(A, H, I, Lambda, Decay):
-    NNLSfit = nnlsfit(A, H, Lambda, Decay)
+def getG(A, H, I, Lambda, signal):
+    # Determining lambda function G
+
+    NNLSfit = nnlsfit(A, H, Lambda, signal)
+    # Calculating G with CrossValidation method
     G = (
-        norm(Decay - A * NNLSfit)
-        ^ 2 / np.trace(I - A * (A.T * A + (Lambda) * H.T * H) ^ -1 * A.T)
-        ^ 2
+        norm(signal - np.matmul(A, NNLSfit)) ** 2
+        / np.trace(
+            I
+            - np.matmul(
+                np.matmul(
+                    A, np.linalg.inv(np.matmul(A.T, A) + np.matmul(Lambda * H.T, H))
+                ),
+                A.T,
+            )
+        )
+        ** 2
     )
     return G
 
 
 def regNNLS(DBasis, signal):
-    # regularised NNLS fitting based on CVNNLS.m of the AnalyzeNNLS by Bjarnason et al.
+    # Regularised NNLS fitting based on CVNNLS.m of the AnalyzeNNLS by Bjarnason et al.
 
     # Identity matrix
     I = np.identity(len(signal))
 
     # Curvature
     Dlength = len(DBasis[1][:])
-    H = (
-        -2 * np.identity(Dlength, Dlength)
-        + np.diagonal(np.ones(Dlength - 1, 1), 1)
-        + np.diagonal(np.ones(Dlength - 1, 1), -1)
+    H = np.array(
+        -2 * np.identity(Dlength)
+        + np.diag(np.ones(Dlength - 1), 1)
+        + np.diag(np.ones(Dlength - 1), -1)
     )
 
     LambdaLeftInit = 0.00001
@@ -66,13 +82,13 @@ def regNNLS(DBasis, signal):
         i = +1
 
     Lambda = midpoint
-    s = nnlsfit(A, H, Lambda, signal)
+    s = nnlsfit(DBasis, H, Lambda, signal)
 
     [amp_min, resnormMin] = nnls(DBasis, signal)
 
-    y_recon = DBasis * s
+    y_recon = np.matmul(DBasis, s)
     resid = signal - y_recon
-    resnormSmooth = sum(np.multiply(resid * resid))
+    resnormSmooth = np.sum(np.multiply(resid, resid))
     chi = resnormSmooth / resnormMin
 
     return s, chi, resid
