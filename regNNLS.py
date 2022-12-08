@@ -58,6 +58,7 @@ def regNNLS(DBasis, signal):
     LambdaLeft = LambdaLeftInit
     LambdaRight = LambdaRightInit
 
+    # Function (+ delta) and derivative f at left point
     G_left = getG(DBasis, H, I, LambdaLeft, signal)
     G_leftDiff = getG(DBasis, H, I, LambdaLeft + tol, signal)
     f_left = (G_leftDiff - G_left) / tol
@@ -66,6 +67,7 @@ def regNNLS(DBasis, signal):
     while abs(LambdaRight - LambdaLeft) > tol:
 
         midpoint = (LambdaRight + LambdaLeft) / 2
+        # Function (+ delta) and derivative f at middle point
         G_middle = getG(DBasis, H, I, midpoint, signal)
         G_middleDiff = getG(DBasis, H, I, midpoint + tol, signal)
         f_middle = (G_middleDiff - G_middle) / tol
@@ -74,18 +76,24 @@ def regNNLS(DBasis, signal):
             print("Original choice of Lambda might not bracket minimum.")
             break
 
+        # Continue with logic
         if f_left * f_middle > 0:
+            # Throw away left half
             LambdaLeft = midpoint
             f_left = f_middle
         else:
+            # Throw away right half
             LambdaRight = midpoint
         i = +1
 
+    # NNLS fit of found minimum
     Lambda = midpoint
     s = nnlsfit(DBasis, H, Lambda, signal)
 
+    # Determin chi2_min
     [amp_min, resnormMin] = nnls(DBasis, signal)
 
+    # Determin chi2_smooth
     y_recon = np.matmul(DBasis, s)
     resid = signal - y_recon
     resnormSmooth = np.sum(np.multiply(resid, resid))
