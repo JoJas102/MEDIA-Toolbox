@@ -8,11 +8,12 @@ def NNLSfitting(DBasis, signal):
     s = np.zeros((len(signal), len(signal), len(DBasis[1][:])))
     sReg = s
 
-    if np.sum(signal) == 0:
-        return s
-
     for i in range(len(signal)):
         for j in range(len(signal)):
+
+            if np.sum(signal[i][j][:]) == 0:
+                return s, sReg
+
             # NNLS fitting w\ reg minimises norm(A*s-signal) for reference
             s[i][j][:], _ = nnls(DBasis, signal[i][j][:])
 
@@ -20,4 +21,4 @@ def NNLSfitting(DBasis, signal):
             sReg[i][j][:], mu, resid = regNNLS(DBasis, signal[i][j][:])
             # larger mu = more satisfaction of constraints at expanse of increasing misfit (Witthal1989)
 
-    return s, sReg, mu
+    return s, sReg

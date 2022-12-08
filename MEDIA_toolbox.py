@@ -25,7 +25,7 @@ signal = np.multiply(nii, ROI)
 # TODO: parrallelise code
 
 # Running NNLS simulations
-sNNLSNoReg, sNNLSReg, mu = NNLSfitting(DBasis, signal)
+sNNLSNoReg, sNNLSReg = NNLSfitting(DBasis, signal)
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
 dNNLS, fNNLS = findpeaksNNLS(sNNLSReg, DValues)
