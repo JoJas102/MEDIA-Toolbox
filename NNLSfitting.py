@@ -8,6 +8,9 @@ def NNLSfitting(DBasis, signal):
     s = np.zeros((len(signal), len(signal), len(DBasis[1][:])))
     sReg = s
 
+    if np.sum(signal) == 0:
+        return s
+
     for i in range(len(signal)):
         for j in range(len(signal)):
             # NNLS fitting w\ reg minimises norm(A*s-signal) for reference
