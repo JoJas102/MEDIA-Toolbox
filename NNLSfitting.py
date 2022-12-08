@@ -11,6 +11,7 @@ def NNLSfitting(DBasis, signal):
     for i in range(len(signal)):
         for j in range(len(signal)):
 
+            # Skipping pixels not included in ROI
             if np.sum(signal[i][j][:]) == 0:
                 return s, sReg
 
