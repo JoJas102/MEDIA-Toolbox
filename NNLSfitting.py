@@ -5,7 +5,8 @@ from scipy.optimize import nnls
 
 def NNLSfitting(DBasis, signal):
 
-    s = sReg = np.zeros((len(signal), len(signal), len(DBasis[1][:])))
+    s = np.zeros((len(signal), len(signal), len(DBasis[1][:])))
+    sReg = np.zeros((len(signal), len(signal), len(DBasis[1][:])))
 
     for i in range(len(signal)):
         for j in range(len(signal)):
