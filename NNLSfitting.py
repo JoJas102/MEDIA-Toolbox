@@ -15,6 +15,7 @@ def NNLSfitting(DBasis, signal):
             if np.sum(signal[i][j][:]) == 0:
                 continue
 
+            # TODO: find solution for nnls Runtiome error: too many iterations
             # NNLS fitting w\ reg minimises norm(A*s-signal) for reference
             s[i][j][:], _ = nnls(DBasis, signal[i][j][:])
 
