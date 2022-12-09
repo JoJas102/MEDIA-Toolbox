@@ -13,7 +13,7 @@ def NNLSfitting(DBasis, signal):
 
             # Skipping pixels not included in ROI
             if np.sum(signal[i][j][:]) == 0:
-                return s, sReg
+                continue
 
             # NNLS fitting w\ reg minimises norm(A*s-signal) for reference
             s[i][j][:], _ = nnls(DBasis, signal[i][j][:])
