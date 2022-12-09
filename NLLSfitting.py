@@ -34,6 +34,10 @@ def NLLSfitting(
     for i in range(len(signal)):
         for j in range(len(signal)):
 
+            # Skipping pixels not included in ROI
+            if np.sum(signal[i][j][:]) == 0:
+                break
+
             # Scale signal for NLLS to find reasonable volume fractions
             scaling = 100 / signal[i][j][1]
             scaledSignal = np.multiply(signal[i][j][:], scaling)
