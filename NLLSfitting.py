@@ -27,53 +27,37 @@ def NLLSfitting(
     # NLLS fitting routine
     # if called w\o dIn and fIn uses default tri-exp start valuesfor d and f [Periquito2021]
 
-    # TODO: how many peaks/entrys for array initilisation?
-    peaks = 2
-    d = np.zeros((len(signal), len(signal), peaks))
-    f = np.zeros((len(signal), len(signal), peaks))
+    dim = 4
+    d = np.zeros((len(signal), len(signal), dim))
+    f = np.zeros((len(signal), len(signal), dim))
+
     for i in range(len(signal)):
         for j in range(len(signal)):
-
-            # Declare start values
-            x0 = np.append(dIn[i][j][:], fIn[i][j][:-1])
-
-            # Number of found compartments by NNLS
-            peaks = np.count_nonzero(x0[0:2])
 
             # Scale signal for NLLS to find reasonable volume fractions
             scaling = 100 / signal[i][j][1]
             scaledSignal = np.multiply(signal[i][j][:], scaling)
 
-            x0 = np.array([1.35 * 1e-3, 4 * 1e-3, 52.5])
-            scaledSignal = np.array(
-                [
-                    100,
-                    90,
-                    85,
-                    80,
-                    75,
-                    70,
-                    60,
-                    55,
-                    50,
-                    45,
-                    40,
-                    30,
-                    20,
-                    10,
-                    5,
-                    2,
-                ]
-            )
+            # Declare start values (NNLS results)
+            x0 = np.append(dIn[i][j][:], fIn[i][j][:-1])
+
+            # Number of found compartments (by NNLS)
+            peaks = np.count_nonzero(x0[0:2])
 
             # NLLS fitting result containing d and f
             result = least_squares(
                 multi_exp_wrapper(b, scaledSignal, peaks), x0, method="lm"
             )
-            s = result.x
-            s = np.append(s, 100 - sum(s[peaks:]))
 
-            d[i][j][:] = s[0:2]
-            f[i][j][:] = s[peaks:]
+            dOut = result.x[:peaks]
+            fOut = np.append(result[peaks:], 100 - sum(result[peaks:]))
+
+            # Fill with zeros for uniform dimension
+            if len(dOut) < dim:
+                dOut = np.append(dOut, np.zeros(dim - len(dOut)))
+                fOut = np.append(fOut, np.zeros(dim - len(fOut)))
+
+            d[i][j][:] = dOut
+            f[i][j][:] = fOut
 
     return d, f

@@ -25,17 +25,13 @@ signal = np.multiply(nii, ROI)
 # TODO: parrallelise code
 
 # Running NNLS simulations
-# sNNLSNoReg, sNNLSReg = NNLSfitting(DBasis, signal)
-sNNLSReg = np.ones((176, 176, 300))  # for testing
+sNNLSNoReg, sNNLSReg = NNLSfitting(DBasis, signal)
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
 dNNLS, fNNLS = findpeaksNNLS(sNNLSReg, DValues)
 
 # NLLS/ tri-exponential with NNLS results as a priori information
-# TODO: fix inaccurate NLLS results
 dNLLS, fNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS)
-
-# TODO: additional structures to save relevant results?
 
 # ==========================================================================
 # Plotting and saving data
@@ -43,8 +39,10 @@ dNLLS, fNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS)
 
 # Plotting figures
 # TODO: Adjust plotSimu to maps instead of mean signal
-plotSimu(signal, b, fitNNLS)
+# plotSimu(signal, b, fitNNLS)
 
 # Write simulation data to file
 # TODO: Save results to (excel) file
-filename = ["NNLSfitting.txt" "MEDIAresults.txt"]
+filename = ["NNLSfitting.txt" "NLLSfitting.txt"]
+np.savetxt(filename[1], dNNLS)
+np.savetxt(filename[2], dNLLS)
