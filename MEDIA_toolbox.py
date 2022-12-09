@@ -45,5 +45,5 @@ dNLLS, fNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS)
 # Write simulation data to file
 # TODO: Save results to (excel) file
 filename = ["NNLSfitting.txt" "NLLSfitting.txt"]
-np.save(filename[1], dNNLS)
-np.save(filename[2], dNLLS)
+np.savetxt(filename[1], dNNLS[66][66][:])
+np.savetxt(filename[2], dNLLS[66][66][:])
