@@ -25,6 +25,7 @@ signal = np.multiply(nii, ROI)
 # TODO: parrallelise code
 
 # Running NNLS simulations
+# TODO: fix NNLS fitting (d and f filled with 0)
 sNNLSNoReg, sNNLSReg = NNLSfitting(DBasis, signal)
 
 # Calculating NNLS diffusion parmeters (0 = noReg, 1 = Reg)
@@ -44,5 +45,5 @@ dNLLS, fNLLS = NLLSfitting(b, signal, Dmin, Dmax, dNNLS, fNNLS)
 # Write simulation data to file
 # TODO: Save results to (excel) file
 filename = ["NNLSfitting.txt" "NLLSfitting.txt"]
-np.savetxt(filename[1], dNNLS)
-np.savetxt(filename[2], dNLLS)
+np.save(filename[1], dNNLS)
+np.save(filename[2], dNLLS)
