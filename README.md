@@ -1,7 +1,7 @@
 ﻿# Multi-Exponential Decay Image Analysis (MEDIA) Toolbox
 
 ## IMPORTANT NOTE: 
-This project was merged and developed into the PyNeapple project (https://github.com/darksim33/Pyneapple). Please find an advanced version of this code with many more features, a graphical user interface (GUI), polished code and many many more improvements under the provided (link)[(https://github.com/darksim33/Pyneapple)]. (Jonas Jasse @28.05.2024)
+This project was merged and developed into the PyNeapple project (https://github.com/darksim33/Pyneapple). Please find an advanced version of this code with many more features, a graphical user interface (GUI), polished code and many many more improvements under the provided [link](https://github.com/darksim33/Pyneapple). (Jonas Jasse @28.05.2024)
 
 ## Description
 
