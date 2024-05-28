@@ -1,5 +1,8 @@
 ﻿# Multi-Exponential Decay Image Analysis (MEDIA) Toolbox
 
+## IMPORTANT NOTE: 
+This project was merged and developed into the PyNeapple project (https://github.com/darksim33/Pyneapple). Please find an advanced version of this code with many more features, a graphical user interface (GUI), polished code and many many more improvements under the provided (link)[(https://github.com/darksim33/Pyneapple)]. (Jonas Jasse @28.05.2024)
+
 ## Description
 
 Program to analyse multi-exponential signal compartments in DWI images/scans with several b-values using NNLS fitting among others to fit diffusion data and compare multiple multi-exponential fitting methods. Finding the total number of components contributing to the multi-exponential signal and analysing the results by calculating corresponding diffusion parameters.\
